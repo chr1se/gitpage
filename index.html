@@ -347,7 +347,7 @@
 
     function search(p=0,filter = true){
       if(filter){
-        let n = _('#name')[0].innerText.trim();
+        let n = _('#name')[0].innerText.trim().toLowerCase();
         let a = _('#age')[0].innerText.split('-').map(e=>Number(e));
         let g = _('.radiorow.selected')[0]?.getAttribute('gender');
 
