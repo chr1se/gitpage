@@ -1,11 +1,404 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Git Test</title>
-  </head>
-  <body>
-    <h1>2WOHOOO</h1>
-  </body>
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="WMCA challenge">
+  <title>WMCA</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="file:///Users/chris/Documents/wmca/favicon.ico">
+</head>
+<body>
+  <style>
+    html{width:100%;height:100%;overflow-x: hidden;}
+    html::-webkit-scrollbar {width: 0px;}
+    body{text-align: center;margin: 0;font-size: 0;width:100%;height: 100%;min-width: 320px;overflow-x: hidden;}
+    header{position: relative; display:grid;place-items: center;background:url(file:///Users/chris/Documents/wmca/library.jpg) no-repeat center/cover;height: 250px;max-height: 40%;}
+    header div{position: absolute;backdrop-filter: brightness(0.5);width: 100%; height: 100%;}
+    header h1{color: white;position: relative;z-index: 1;font-size: 40px;font-family: Texta-Regular;cursor: default;}
+
+    @font-face {font-family: "Texta-Regular"; src: url("file:///Users/chris/Documents/wmca/TextaRegular.ttf"); }
+
+    aside{display:inline-block; width: 320px;font-size: 18px;position: relative;height: 400px;text-align:left}
+    aside h2{font-size:20px; font-family: 'Texta-Regular';height: 22px;position: relative;}
+    .filters{text-align: left;margin-bottom: 20px;transition: height 1s;overflow: hidden;}
+    
+    @media (max-width: 959px) {
+      aside{text-align:center;height: initial;border-bottom: 1px solid black;}
+      aside h2{cursor: pointer;  background: rgb(229 86 50);color:white;padding:5px 60px 5px 40px;display: inline-block;width: 53px;}
+      aside h2:after{content: '▼'; position: absolute;right: 10px; color: white; font-size: 12px; top:9px;}
+      .filters{height: 0;cursor: pointer;}
+      .reveal{height:242px}
+    }
+
+    aside .label{margin-bottom: 5px;font-family: Texta-Regular;font-size: 16px;height: 17px;}
+    .input{height: 22px; display: inline-block; padding: 5px;width: 300px;border:1px solid rgb(229,86,50);margin-bottom: 20px;position: relative;outline:0}
+    .age{cursor: pointer;}
+    .age::before{content: '';position: absolute;background-color:rgb(229,86,50);width:32px;height:100%;right: 0;top:0}
+    .age::after{content:'▼';position: absolute;right: 10px;color: white;font-size: 12px;top:9px}
+    .ages{z-index: 1; position: absolute; width:310px;top:180px;background: rgb(255 255 255);border: 1px solid rgb(229 86 50);display:none;}   
+    .ages div{cursor: pointer;padding: 5px;}
+    .ages .selected{background-color:rgb(229,86,50);color:white;}
+    
+    .radiorow{display: inline-block;}
+    .selected .radio{color:rgb(229 86 50)}
+    .radio {display: inline-block;border-radius: 50%;height: 25px;width: 25px;text-align: center;font-size: 38px;line-height: 25px;color: white;cursor: pointer;border: 2px solid rgb(229 86 50);margin-right: 10px;margin-bottom:5px;}
+    .radio + div{display:inline-block;cursor: pointer;  position: relative;top: -7px;}
+    @media (min-width:960px)  {
+      .age:hover + .ages{display: block;}      
+      .ages:hover{display: block;}
+      .ages div:hover{background-color:rgb(255 167 145);color:white;}
+      
+    }
+
+    article{display:inline-block;vertical-align: top;max-width:640px;text-align:left;position: relative;font-size: 0;width: 100%;}
+    #users{width:100%;  min-height: calc(100% - 130px);}
+    @media (max-width: 639px) {
+      article{text-align: center;}
+      .user{margin-right: 0 !important;}
+    }
+
+    #counter{font-family: Texta-Regular;height: 20px;font-size: 20px;}
+    user-block{vertical-align:top; height: 327px;width: 300px; display:inline-block;  margin-bottom: 20px;margin-right:40px;border-bottom: 1px solid rgb(0 0 0);}
+    user-block:nth-of-type(even){margin-right: 0;}
+
+    #pager{font-family: 'Texta-Regular';font-size: 17px;}
+    #pager .prev,
+    #pager .next{display: inline-block;cursor: pointer;}
+    #pager span{  width: 20px;padding: 3px;margin: 5px;cursor: pointer;display: inline-block;text-align: center;border-bottom: 2px solid transparent;}
+    #pager .current{border-color: rgb(40,108,153);color: rgb(229,86,50);}
+    #pager *:hover{color: rgb(229,86,50);}
+
+    .speechBox{position:fixed;bottom:5px;right:5px;color: white; padding:10px;font-size: 18px; font-family: Texta-Regular; background: blue;border-radius: 10px;width: 200px;cursor: pointer;display: grid;place-items: center;transition: height 1s;height: 20px;overflow: hidden;}
+    .speechBox .list{width:100%;text-align: left;}
+    .speechBox span{  text-decoration: underline solid;font-style: italic;color: rgb(154 205 50);}
+    .speechBox .err{  color: rgb(172 16 16);text-align: center;font-family: Helvetica;margin-top: 10px;}
+    
+    footer{ background: rgb(87 86 86);padding: 30px 0;color: rgb(255 255 255);display: grid;margin-top:50px;font-size: 17px;place-items: center;}
+    footer div{display: inline-block;max-width: 700px;}
+    footer a{  width: 170px;display: inline-block;font-family: Texta-Regular;cursor: pointer;margin:10px 0;color:white;text-decoration: none;}
+    footer a:hover{text-decoration: underline;}
+  </style>
+
+
+  <header>
+    <div></div>
+    <h1>Find a person</h1>
+  </header>
+  <aside role="search">
+    <h2 onclick="this.nextElementSibling.classList.toggle('reveal')">Refine</h2>
+    <div class="filters">
+      <div class="label">Name</div>
+      <div id="name" class="input" contenteditable="true" oninput="search()"></div>
+      <div class="label">Age</div>
+      <div id="age" class="input age" onclick="this.nextElementSibling.style.display = 'block'"></div>
+      <div class="ages">
+        <div age="none" onclick="selectAge(this)">none</div>
+        <div age="0" data-po="2" onclick="selectAge(this)">0  - 10</div>
+        <div age="10" onclick="selectAge(this)">10 - 20</div>
+        <div age="20" onclick="selectAge(this)">20 - 30</div>
+        <div age="30" onclick="selectAge(this)">30 - 40</div>
+        <div age="40" onclick="selectAge(this)">40 - 50</div>
+      </div>
+      <div class="label">Gender</div >
+      <div class="radiorow" gender="male" onclick="selectGender(this,1)"><div class="radio">●</div><div>Male</div></div><br>
+      <div class="radiorow" gender="female" onclick="selectGender(this)"><div class="radio">●</div><div>Female</div></div>
+    </div>
+  </aside>
+  <article>
+    <h3 id="counter"></h3>
+    <div id="users"></div>
+    <div id="pager"></div>
+  </article>
+  <section class="speechBox" onclick="toggle(this)">
+    <div>Start speech recognition</div>
+    <div class="err">Use Chrome</div>
+    <div class="list">  
+      <p>Say:</p>
+      <p>" search <span>andy</span> "</p>
+      <p>" age <span>30</span> "</p>
+      <p>" gender <span>male</span> "</p>
+      <p>" select <span>andy</span> "</p>
+      <p>" clear "</p>
+    </div>
+  </section>
+  <footer>
+    <div>
+      <a href="https://www.wmca.org.uk/careers">Careers</a>
+      <a href="https://www.wmca.org.uk/documents">Documents</a>
+      <a href="https://www.wmca.org.uk/policies">Policies</a>
+      <a href="https://www.governance.wmca.org.uk/">Committee meetings</a>
+      <a href="https://www.wmca.org.uk/contact-us">Contact us</a>
+      <a href="https://www.wmca.org.uk/procurement">Procurement</a>
+      <a href="https://www.wmca.org.uk/media-assets">Media Assets</a>
+      <a href="https://www.wmca.org.uk/freedom-of-information">Freedom of Information</a>
+    </div>
+  </footer>
+
+  <script>
+    var l = console.log;
+    var _ = s=>document.querySelectorAll(s);
+    var filtered = [];
+    var people = [];
+    let users = _('#users')[0];
+    let pager = _('#pager')[0];
+    let speechBox = _('.speechBox')[0];
+    
+    var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition
+    var SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList
+    var SpeechRecognitionEvent = SpeechRecognitionEvent || webkitSpeechRecognitionEvent
+
+    _('.speechBox .err')[0].style.display = SpeechRecognition?'none':'block';
+
+    if(SpeechRecognition){
+      var recognition = new SpeechRecognition();
+      var speechRecognitionList = new SpeechGrammarList();
+
+      recognition.lang = 'en-US';
+      recognition.onresult = function(event) {
+        var [a,b] = event.results[0][0].transcript.toLowerCase().split(' ');
+        l(a,b);
+        
+        if(similarity(a,'select') > 0.5){
+
+        }
+
+        if(similarity(a,'search') > 0.5){
+          _('#name')[0].innerText = b;
+          _('#name')[0].dispatchEvent(new Event('input', {bubbles: true,cancelable: true}));
+          return
+        }
+        
+        if(similarity(a,'age') > 0.5)return $('.ages [age="'+b+'"]')[0].click();
+
+        if(similarity(a,'gender') > 0.5)return $('.radiorow[gender="'+b+'"]')[0].click();
+        
+        if(similarity(a,'clear')){
+          _('#name')[0].innerText = '';
+          _('#age')[0].innerText = '';
+          _('.radiorow.selected').classList.remove('selected');
+          _('#name')[0].dispatchEvent(new Event('input', {bubbles: true,cancelable: true}));
+          return;
+        }
+        
+      }
+
+      recognition.onspeechend = function() {
+        recognition.stop();
+        l('speech end')
+      }
+
+      recognition.onerror = function(event) {
+        l('speech error');
+        if(!speechBox.hasAttribute('style'))recognition.abort();
+      }
+      
+      recognition.onaudiostart = function(event) {
+          //Fired when the user agent has started to capture audio.
+          console.log('SpeechRecognition.onaudiostart');
+          if(!speechBox.hasAttribute('style'))recognition.abort();
+      }
+      
+      recognition.onaudioend = function(event) {
+          //Fired when the user agent has finished capturing audio.
+          console.log('SpeechRecognition.onaudioend');
+      }
+      
+      recognition.onend = function(event) {
+          //Fired when the speech recognition service has disconnected.
+          console.log('SpeechRecognition.onend');
+          if(speechBox.hasAttribute('style'))recognition.start();
+      }
+      
+      recognition.onnomatch = function(event) {
+          //Fired when the speech recognition service returns a final result with no significant recognition. This may involve some degree of recognition, which doesn't meet or exceed the confidence threshold.
+          console.log('SpeechRecognition.onnomatch');
+      }
+      
+      recognition.onsoundstart = function(event) {
+          //Fired when any sound — recognisable speech or not — has been detected.
+          console.log('SpeechRecognition.onsoundstart');
+      }
+      
+      recognition.onsoundend = function(event) {
+          //Fired when any sound — recognisable speech or not — has stopped being detected.
+          console.log('SpeechRecognition.onsoundend');
+      }
+      
+      recognition.onspeechstart = function (event) {
+          //Fired when sound that is recognised by the speech recognition service as speech has been detected.
+          console.log('SpeechRecognition.onspeechstart');
+          if(!speechBox.hasAttribute('style'))recognition.abort();
+      }
+      
+      recognition.onstart = function(event) {
+          //Fired when the speech recognition service has begun listening to incoming audio with intent to recognize grammars associated with the current SpeechRecognition.
+          console.log('SpeechRecognition.onstart');
+          if(!speechBox.hasAttribute('style'))recognition.abort();
+      }
+    }
+    function similarity(s1, s2) {
+      var longer = s1;
+      var shorter = s2;
+      if (s1.length < s2.length) {
+        longer = s2;
+        shorter = s1;
+      }
+      var longerLength = longer.length;
+      if (longerLength == 0) {
+        return 1.0;
+      }
+      return (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength);
+    }
+
+    function editDistance(s1, s2) {
+      s1 = s1.toLowerCase();
+      s2 = s2.toLowerCase();
+
+      var costs = new Array();
+      for (var i = 0; i <= s1.length; i++) {
+        var lastValue = i;
+        for (var j = 0; j <= s2.length; j++) {
+          if (i == 0)
+            costs[j] = j;
+          else {
+            if (j > 0) {
+              var newValue = costs[j - 1];
+              if (s1.charAt(i - 1) != s2.charAt(j - 1))
+                newValue = Math.min(Math.min(newValue, lastValue),
+                  costs[j]) + 1;
+              costs[j - 1] = lastValue;
+              lastValue = newValue;
+            }
+          }
+        }
+        if (i > 0)
+          costs[s2.length] = lastValue;
+      }
+      return costs[s2.length];
+    }
+
+    function toggle(e){
+      if(e.hasAttribute('style')){
+        e.removeAttribute('style');
+        recognition.abort();
+      }else {
+        e.style.height = "247px";
+        //recognition.start();
+
+      }
+    }
+
+    customElements.define('user-block', class extends HTMLElement{
+      constructor(){
+        super();
+        this.attachShadow({mode:'open'}).innerHTML=`
+          <style>
+            ::slotted(img){width: 100%; height: 210px;object-fit: contain;}
+            ::slotted(h2){margin:10px 0;font-family: Texta-Regular;height:25px;width: 100%;font-size: 20px;}
+            .label{vertical-align: top; color: rgb(40,108,153);font-size: 16px; display: inline-block;margin-right: 5px;  margin-bottom: 5px;font-family: Texta-Regular;width:50px;height: 17px;}
+            ::slotted(div){display: inline-block;font-size: 16px;}
+            ::slotted(:last-child){margin-bottom:5px;}
+          </style>          
+          <slot name="img"></slot>
+          <slot name="name"></slot>
+          <div class="label">Age:</div><slot name="age"></slot><br>
+          <div class="label">Gender:</div><slot name="gender"></slot><br>
+          <div class="label">Email:</div><slot name="email"></slot>
+        `;
+      }
+    }); 
+
+    fetch(`https://randomuser.me/api/?seed=2008d0266ae87612&inc=picture,gender,name,dob,email&results=100`)
+    .then(d=>d.json())
+    .then(d=>people = d.results)
+    .then(()=>search())
+
+
+    function move(p) {
+      let e = _('#pager .current')[0][(p?'next':'previous')+'ElementSibling'];
+      if(e.localName == 'span')e.click();
+    }
+
+    function selectAge(e){
+      if(e.className == 'selected')return;
+
+      _('.ages .selected')[0]?.classList.remove('selected');
+      e.className = 'selected';
+      e.parentElement.previousElementSibling.innerText = e.innerText == 'none'?'':e.innerText;
+      e.parentElement.style.display = 'none';
+      setTimeout(()=>e.parentElement.removeAttribute('style'),100);
+      search();
+    }
+
+    function selectGender(e,isMale){
+      if(e.classList.contains('selected')){
+        e.classList.remove('selected');
+        search();
+        return;
+      }
+
+      let pre = isMale?'next':'previous';
+
+      e.classList.add('selected');
+      e[pre+'ElementSibling'][pre+'ElementSibling'].classList.remove('selected');
+      search();
+    }
+
+    function search(p=0,filter = true){
+      if(filter){
+        let n = _('#name')[0].innerText.trim();
+        let a = _('#age')[0].innerText.split('-').map(e=>Number(e));
+        let g = _('.radiorow.selected')[0]?.getAttribute('gender');
+
+        filtered = people.filter(e=>{
+          let [name,age,gender] = [(e.name.first+e.name.last).toLowerCase(),e.dob.age,e.gender];
+
+          if((n && !(name).includes(n)) || 
+            (a[1] && (age < a[0] || age > a[1])) ||
+            (g && gender != g))return false;
+          else return true;
+        })
+
+        let len = filtered.length;
+        _('#counter')[0].innerText = len+' result'+(len == 1?'':'s');
+
+        let nums='<div class="prev" style="visibility:hidden" onclick="move(0)">Prev</div>';
+        let pages = Math.ceil(len/6);
+        for(let i = 0;i < pages;i++)nums+=`<span class="${i?'':'current'}" onclick="search(${i},0)">${i+1}</span>`;
+
+        nums+=`<div class="next" style="display:${pages>1?'inline-block':'none'}" onclick="move(1)">Next</div>`;
+        pager.innerHTML = nums;
+      }
+
+      _('.user').forEach(e=>e.remove());
+      let html = '';
+
+      filtered.slice(p*6,(p*6)+6).forEach(e=>{
+        let [first,last,age,gender,email] = [e.name.first,e.name.last,e.dob.age,e.gender,e.email];
+        
+        html +=`
+          <user-block>
+            <img slot="img" src="${e.picture.large}"/>
+            <h2 slot="name">${first+' '+last}</h2>
+            <div slot="age">${age}</div>
+            <div slot="gender">${gender}</div>
+            <div slot="email">${email}</div>           
+          </user-block>`;
+       })
+
+
+      users.innerHTML = html;
+
+      if(filtered.length < 6)return;
+      _('#pager .prev')[0].style.visibility = p?'visible':'hidden';
+      _('#pager .current')[0].className = '';
+      let spans = _('#pager span');
+      spans[p].className = 'current';
+      
+      _('#pager .next')[0].style.display = p == spans.length -1?'none':'inline-block';              
+    }
+    
+  </script> 
+</body>
 </html>
