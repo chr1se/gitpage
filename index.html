@@ -169,14 +169,14 @@
           return
         }
         
-        if(similarity(a,'age') > 0.5)return $('.ages [age="'+b+'"]')[0].click();
+        if(similarity(a,'age') > 0.5)return _('.ages [age="'+b+'"]')[0].click();
 
-        if(similarity(a,'gender') > 0.5)return $('.radiorow[gender="'+b+'"]')[0].click();
+        if(similarity(a,'gender') > 0.5)return _('.radiorow[gender="'+b+'"]')[0].click();
         
         if(similarity(a,'clear')){
           _('#name')[0].innerText = '';
           _('#age')[0].innerText = '';
-          _('.radiorow.selected').classList.remove('selected');
+          _('.radiorow.selected').forEach(e=>e.classList.remove('selected'));
           _('#name')[0].dispatchEvent(new Event('input', {bubbles: true,cancelable: true}));
           return;
         }
@@ -284,7 +284,7 @@
         recognition.abort();
       }else {
         e.style.height = "247px";
-        //recognition.start();
+        recognition.start();
 
       }
     }
