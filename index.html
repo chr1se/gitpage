@@ -115,10 +115,9 @@
     <div class="err">Use Chrome</div>
     <div class="list">  
       <p>Say:</p>
-      <p>" search <span>andy</span> "</p>
+      <p>" name <span>andy</span> "</p>
       <p>" age <span>30</span> "</p>
       <p>" gender <span>male</span> "</p>
-      <p>" select <span>andy</span> "</p>
       <p>" clear "</p>
     </div>
   </section>
@@ -163,7 +162,7 @@
 
         }
 
-        if(similarity(a,'search') > 0.5){
+        if(similarity(a,'name') > 0.5){
           _('#name')[0].innerText = b;
           _('#name')[0].dispatchEvent(new Event('input', {bubbles: true,cancelable: true}));
           return
